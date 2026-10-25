@@ -1,6 +1,7 @@
 TRIVENKEM AGENCIES - CATALOGUE MAKER (single file: index.html)
-1. GitHub repository > open index.html > pencil icon > replace all text with the new file's text > Commit.
-   OR: Add file > Upload files > upload the new index.html (it replaces the old one) > Commit.
-2. Open https://USERNAME.github.io/REPONAME/ (wait 1-2 minutes).
-USE: Company (set phone etc.) > + Add product > Select products > Create PDF. Max 10 items per PDF.
-Products are saved in the browser. Use Backup regularly.
+UPDATE: GitHub repository > Add file > Upload files > upload this index.html (replaces old) > Commit changes.
+        Open https://USERNAME.github.io/REPONAME/ after 1-2 minutes.
+IMPORT EXCEL: tap "Import Excel" and pick your file. Reads: Product name, Application category (as Uses), Profile.
+        Same names are merged. Replaces current list (photos/prices of matching names are kept).
+EXPORT EXCEL: tap "Export Excel" -> fill Pack size / MRP / Offer price in Excel -> Import it back.
+PDF: select products > Create PDF > choose "Show profile" or "Blank - hide profile" > Download.
