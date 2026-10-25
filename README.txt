@@ -1,7 +1,6 @@
-TRIVENKEM AGENCIES - CATALOGUE MAKER
-1. Upload all files to a GitHub repository (index.html, tk-style.css, tk-app.js).
-2. Settings > Pages > Deploy from branch: main, / (root) > Save.
-3. Open https://USERNAME.github.io/REPONAME/ on your phone or PC.
-USE: Company details (set phone etc.) > Add product > tick products > Create PDF.
-Max 10 items per PDF; if you tick 25 you get 3 PDFs.
-Your products are saved in that browser. Use Backup regularly (Restore on a new device).
+TRIVENKEM AGENCIES - CATALOGUE MAKER (single file: index.html)
+1. GitHub repository > open index.html > pencil icon > replace all text with the new file's text > Commit.
+   OR: Add file > Upload files > upload the new index.html (it replaces the old one) > Commit.
+2. Open https://USERNAME.github.io/REPONAME/ (wait 1-2 minutes).
+USE: Company (set phone etc.) > + Add product > Select products > Create PDF. Max 10 items per PDF.
+Products are saved in the browser. Use Backup regularly.

@@ -1,21 +1,170 @@
 <!DOCTYPE html>
 <html lang="en"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TRIVENKEM AGENCIES – Catalogue Maker</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="tk-style.css">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TRIVENKEM AGENCIES | Catalogue Maker</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&display=swap">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-</head><body>
-<header><div class="top">
-<div class="brand serif">TRIVENKEM AGENCIES<small>Authorised Dealer of Givaudan · Catalogue Maker</small></div>
-<button class="ghost" id="bSet">Company details</button></div>
-<div class="top"><label class="search"><input id="q" type="search" placeholder="Search your products…"><span>🔍</span></label>
-<button class="add" id="bNew">+ Add product</button></div></header>
-<div class="tools"><button id="bAll">Select all</button><button id="bNone">Clear</button><span id="info"></span>
-<span class="sp"></span><button id="bExp">Backup</button><label class="btnl">Restore<input type="file" id="bImp" accept=".json" hidden></label></div>
-<main><div class="grid" id="grid"></div></main>
-<div class="bottom"><div><b id="sel">0</b> selected<br><small id="parts">10 items per PDF</small></div><button class="pdf" id="bPdf">Create PDF</button></div>
+<style>
+:root{--bg:#f4f6f9;--card:#fff;--ink:#172337;--mut:#667085;--line:#e5eaf1;--acc:#174ea6;--yel:#ffb02e;--field:#f0f4f9;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "DM Sans",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+button{font:inherit;cursor:pointer;border:0}
+button:focus-visible,input:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.w{max-width:760px;margin:0 auto;padding:16px 14px 150px}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 3px 16px}
+.logo{font-weight:800;font-size:20px;letter-spacing:-.5px;color:var(--acc);display:flex;align-items:center}
+.logo:before{content:"✦";display:inline-grid;place-items:center;width:31px;height:31px;margin-right:9px;border-radius:10px;background:var(--yel);color:var(--ink);font-size:18px;flex:none}
+.logo small{font-size:10.5px;color:var(--mut);font-weight:500;letter-spacing:0;margin-left:8px}
+.pill{background:#eaf1ff;color:var(--acc);border-radius:12px;padding:8px 14px;font-weight:700;font-size:14px;white-space:nowrap}
+.hs{background:linear-gradient(130deg,#102b55 0%,#174ea6 64%,#3478d4 100%);color:#fff;border-radius:26px;padding:30px 24px 26px;margin-bottom:16px;position:relative;overflow:hidden;box-shadow:0 14px 28px #174ea622}
+.hs:after{content:"✦";position:absolute;right:15px;bottom:-40px;font-size:160px;line-height:1;color:#ffffff12;font-weight:800}
+.hs h1{font-size:clamp(30px,7vw,42px);line-height:1.05;margin:0 0 10px;font-weight:800;letter-spacing:-1.4px;max-width:440px;position:relative}
+.hs p{margin:0 0 16px;max-width:410px;color:#e5efff;font-size:15px;position:relative}
+.chips{display:flex;flex-wrap:wrap;gap:8px;position:relative}
+.chips span{background:#ffffff16;border:1px solid #ffffff42;border-radius:20px;padding:5px 12px;font-size:13px;font-weight:500}
+.card{background:var(--card);border:1px solid #e7ebf2;border-radius:22px;padding:16px;margin-bottom:16px;box-shadow:0 5px 18px #1d35570a}
+label{display:block;font-size:13px;font-weight:700;color:#526078;margin:13px 0 6px}
+input{width:100%;font:inherit;font-size:15px;color:var(--ink);background:#f7f9fc;border:1px solid #e1e7f0;border-radius:13px;padding:13px 14px}
+input:focus{outline:none;border-color:#3478d4;box-shadow:0 0 0 3px #3478d41a;background:#fff}
+.row{display:flex;gap:8px;align-items:center}.row>*{min-width:0}
+.btn{font-weight:700;border-radius:13px;font-size:15px;padding:14px 17px;background:var(--acc);color:#fff;width:100%;box-shadow:0 4px 10px #174ea61a;transition:transform .12s}
+.btn{white-space:nowrap}.btn:active{transform:scale(.97)}
+.alt{background:#edf2f8;color:#26354c;box-shadow:none}
+.pb{background:#edf2f8;color:#26354c;border-radius:12px;padding:9px 13px;font-weight:700;font-size:14px;white-space:nowrap}
+.note{font-size:12.5px;color:var(--mut);flex:1}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+@media(min-width:600px){.grid{grid-template-columns:repeat(3,1fr)}}
+.pc{background:var(--card);border:2px solid #e7ebf2;border-radius:20px;padding:8px;box-shadow:0 8px 22px #20395c0c;display:flex;flex-direction:column;transition:border-color .15s}
+.pc.on{border-color:var(--acc);box-shadow:0 8px 22px #174ea625}
+.tl{aspect-ratio:1/.9;border-radius:14px;background:#edf2f8;display:grid;place-items:center;position:relative;overflow:hidden;cursor:pointer}
+.mo{font:800 64px "DM Sans",sans-serif;color:var(--acc);opacity:.4}
+.ck{position:absolute;top:8px;left:8px;width:26px;height:26px;border-radius:50%;background:#fff;border:2px solid #c9d3e3;display:grid;place-items:center;font-size:14px;font-weight:800;color:#fff}
+.pc.on .ck{background:var(--acc);border-color:var(--acc)}
+.pc .n{font-weight:700;font-size:15px;margin:10px 5px 0;line-height:1.3;color:#25344a;min-height:39px}
+.pk{font-size:12.5px;color:var(--mut);margin:0 5px}
+.p{font:800 20px "DM Sans",sans-serif;color:var(--acc);margin:4px 5px 10px;display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
+.p s{font:500 12px "DM Sans";color:var(--mut)}.p em{font:700 11px "DM Sans";font-style:normal;background:var(--yel);color:var(--ink);border-radius:6px;padding:1px 7px}
+.a{margin-top:auto;display:flex;gap:6px}
+.add{flex:1;border-radius:12px;padding:11px 8px;font-weight:700;font-size:14px;background:var(--acc);color:#fff}
+.add.on{background:#eaf1ff;color:var(--acc)}
+.ib{width:42px;border-radius:12px;background:#edf2f8;color:#26354c;font-size:16px}.ib.dl{background:#fff1f0;color:#bd2d24}
+.empty{grid-column:1/-1;text-align:center;color:var(--mut);padding:36px 10px}
+.bar{position:fixed;left:0;right:0;bottom:0;padding:10px 14px calc(14px + env(safe-area-inset-bottom,0px));background:linear-gradient(transparent,var(--bg) 35%);z-index:30}
+.bar button{max-width:732px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;width:100%;border-radius:15px;padding:16px 20px;background:var(--yel);color:var(--ink);font:700 16px "DM Sans",sans-serif;box-shadow:0 9px 22px #b9791733}
+.bar button:disabled{opacity:.55;box-shadow:none}
+.modal{position:fixed;inset:0;background:#10203a99;z-index:50;display:none;align-items:flex-end;justify-content:center}
+.modal.open{display:flex}
+.sheet{background:#fff;width:100%;max-width:520px;max-height:92vh;overflow:auto;border-radius:24px 24px 0 0;padding:20px 18px calc(20px + env(safe-area-inset-bottom,0px));animation:up .22s ease-out}
+@keyframes up{from{transform:translateY(30px);opacity:.5}}
+@media(min-width:600px){.modal{align-items:center}.sheet{border-radius:24px}}
+.sheet h2{margin:0 0 4px;font-size:21px;font-weight:800;letter-spacing:-.3px}
+.sheet .sub{font-size:13px;color:var(--mut);margin:0 0 4px}
+.ph{display:flex;gap:12px;align-items:center;margin:12px 0 2px}
+.pv{width:72px;height:72px;border-radius:14px;background:#edf2f8;overflow:hidden;display:grid;place-items:center;font-size:11px;color:var(--mut);flex:none}
+.pv img{width:100%;height:100%;object-fit:cover}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.part{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--line);font-weight:500}
+.part button{background:var(--acc);color:#fff;border-radius:12px;padding:10px 18px;font-weight:700}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:100px;background:var(--ink);color:#fff;padding:11px 18px;border-radius:14px;font-size:14px;z-index:99;box-shadow:0 8px 25px #0002}
+@media(max-width:480px){.logo small{display:none}.logo{font-size:18px}}@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style></head><body>
+<div class="w">
+ <div class="nav"><span class="logo"><span id="lg"></span><small>CATALOGUE STUDIO</small></span><button class="pill" id="bSet">⚙ Company</button></div>
+ <div class="hs"><h1>Your products. Your price list.</h1><p>Pick products, tap Create PDF and send a polished catalogue to your customer on WhatsApp.</p><div class="chips"><span>Authorised Givaudan dealer</span><span>10 items per PDF</span><span>Ready to share</span></div></div>
+ <div class="card">
+  <input id="q" type="search" placeholder="Search your products…" aria-label="Search products">
+  <div class="row" style="margin-top:10px"><button class="btn" id="bNew" style="flex:1.6">+ Add product</button><button class="pb" id="bAll">Select all</button><button class="pb" id="bNone">Clear</button></div>
+  <div class="row" style="margin-top:10px"><span class="note" id="cnt"></span><button class="pb" id="bExp">Backup</button><label class="pb" style="margin:0;cursor:pointer">Restore<input type="file" id="bImp" accept=".json" hidden></label></div>
+ </div>
+ <div class="grid" id="grid"></div>
+</div>
+<div class="bar"><button id="bPdf" disabled><span id="bs">Select products</span><span id="bt">Create PDF</span></button></div>
 <div class="modal" id="m"><div class="sheet" id="sheet"></div></div>
-<div id="toast"></div>
-<script src="tk-app.js"></script>
-</body></html>
+<script>
+var $=function(s){return document.querySelector(s)},PER=10;
+var DEF={name:"TRIVENKEM AGENCIES",tagline:"Authorised Dealer of Givaudan",phone:"",email:"",address:"",note:"Prices are ex-works and subject to GST. Rates may change without notice."};
+var SAMPLE=[{id:1,name:"Oud Royale",pack:"100 g",price:4500,mrp:5200,img:""},{id:2,name:"Ocean Breeze",pack:"1 kg",price:16500,mrp:20000,img:""},{id:3,name:"Velvet Rose",pack:"100 g",price:3200,mrp:3800,img:""}];
+function load(k,d){try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}}
+var P=load('tk_products',SAMPLE),CO=Object.assign({},DEF,load('tk_co',{})),sel=new Set(),q='',curImg='';
+function toast(t){var e=document.createElement('div');e.className='toast';e.textContent=t;document.body.appendChild(e);setTimeout(function(){e.remove()},1800)}
+function save(){try{localStorage.setItem('tk_products',JSON.stringify(P));localStorage.setItem('tk_co',JSON.stringify(CO))}catch(e){toast('Storage full – remove some photos')}}
+function fmt(n){return Number(n).toLocaleString('en-IN')}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function off(p){return p.mrp>p.price?Math.round((1-p.price/p.mrp)*100):0}
+function render(){
+  $('#lg').textContent=CO.name;document.title=CO.name+' | Catalogue Maker';
+  var r=P.filter(function(p){return (p.name+' '+(p.pack||'')).toLowerCase().indexOf(q)>-1});
+  $('#cnt').textContent=P.length+' products · saved on this device';
+  $('#grid').innerHTML=r.length?r.map(function(p){var on=sel.has(p.id),d=off(p);
+   return '<div class="pc'+(on?' on':'')+'"><div class="tl" data-s="'+p.id+'"'+(p.img?' style="background:url(\''+p.img+'\') center/cover"':'')+'>'+(p.img?'':'<span class="mo">'+esc((p.name[0]||'?').toUpperCase())+'</span>')+'<span class="ck">'+(on?'✓':'')+'</span></div><div class="n">'+esc(p.name)+'</div><div class="pk">'+esc(p.pack)+'&nbsp;</div><div class="p">₹'+fmt(p.price)+(d?'<s>₹'+fmt(p.mrp)+'</s><em>'+d+'% off</em>':'')+'</div><div class="a"><button class="add'+(on?' on':'')+'" data-s="'+p.id+'">'+(on?'✓ Selected':'Select')+'</button><button class="ib" data-e="'+p.id+'" aria-label="Edit">✎</button><button class="ib dl" data-d="'+p.id+'" aria-label="Delete">✕</button></div></div>'}).join(''):'<div class="empty">No products yet. Tap “+ Add product” to create your first one.</div>';
+  var n=sel.size,k=Math.ceil(n/PER);
+  $('#bPdf').disabled=!n;$('#bs').textContent=n?n+(n>1?' selected':' selected'):'Select products';
+  $('#bt').textContent=n?'Create PDF'+(k>1?' ('+k+' files)':''):'Create PDF';
+}
+function form(id){var p=P.filter(function(x){return x.id==id})[0]||{name:'',pack:'',price:'',mrp:'',img:''};curImg=p.img||'';
+ $('#m').classList.add('open');
+ $('#sheet').innerHTML='<h2>'+(id?'Edit product':'Add product')+'</h2><p class="sub">Only the basics your customer needs.</p>'
+ +'<div class="ph"><div class="pv" id="pv">'+(p.img?'<img src="'+p.img+'" alt="">':'No photo')+'</div><label class="pb" style="margin:0;cursor:pointer">📷 Choose photo<input type="file" id="ph" accept="image/*" hidden></label></div>'
+ +'<label for="fn">Product name</label><input id="fn" value="'+esc(p.name)+'" placeholder="e.g. Oud Royale">'
+ +'<div class="two"><div><label for="fp">Pack size</label><input id="fp" value="'+esc(p.pack)+'" placeholder="100 g / 1 kg"></div><div><label for="fr">Price (₹)</label><input id="fr" type="number" inputmode="decimal" value="'+esc(p.price)+'"></div></div>'
+ +'<label for="fm">MRP (₹) – optional, shows % off</label><input id="fm" type="number" inputmode="decimal" value="'+(p.mrp||'')+'">'
+ +'<div class="row" style="margin-top:18px"><button class="btn alt" data-x>Cancel</button><button class="btn" data-save="'+(id||'')+'">Save</button></div>';
+ $('#ph').onchange=function(e){var f=e.target.files[0];if(!f)return;var im=new Image();im.onload=function(){var s=Math.min(1,520/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);var x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);curImg=c.toDataURL('image/jpeg',.78);$('#pv').innerHTML='<img src="'+curImg+'" alt="">'};im.src=URL.createObjectURL(f)};
+}
+function saveP(id){var name=$('#fn').value.trim(),price=parseFloat($('#fr').value);if(!name||!price)return toast('Enter name and price');
+ var o={name:name,pack:$('#fp').value.trim(),price:price,mrp:parseFloat($('#fm').value)||0,img:curImg};
+ if(id){Object.assign(P.filter(function(x){return x.id==id})[0],o)}else{o.id=Date.now();P.unshift(o)}save();closeM();render();toast('Saved')}
+function company(){$('#m').classList.add('open');
+ var f=[['name','Company name',''],['tagline','Tagline',''],['phone','Phone / WhatsApp','+91 98765 43210'],['email','Email',''],['address','Address','City, State'],['note','Footer note','']];
+ $('#sheet').innerHTML='<h2>Company details</h2><p class="sub">These appear on every PDF you create.</p>'+f.map(function(a){return '<label>'+a[1]+'</label><input data-co="'+a[0]+'" value="'+esc(CO[a[0]])+'" placeholder="'+a[2]+'">'}).join('')+'<div class="row" style="margin-top:18px"><button class="btn alt" data-x>Cancel</button><button class="btn" data-cosave>Save</button></div>'}
+function closeM(){$('#m').classList.remove('open')}
+function parts(){var a=P.filter(function(p){return sel.has(p.id)}),b=[];for(var i=0;i<a.length;i+=PER)b.push(a.slice(i,i+PER));return b}
+function pdfSheet(){var b=parts();if(b.length==1)return makePdf(b[0],1,1);
+ $('#m').classList.add('open');
+ $('#sheet').innerHTML='<h2>Your PDFs are ready</h2><p class="sub">Tap each one to download, then send to your customer.</p>'+b.map(function(x,i){return '<div class="part"><span>PDF '+(i+1)+' · '+x.length+' items</span><button data-pdf="'+i+'">Download</button></div>'}).join('')+'<div class="row" style="margin-top:16px"><button class="btn alt" data-x>Close</button></div>'}
+function makePdf(items,n,tot){
+ if(!window.jspdf)return toast('PDF tool not loaded – check internet');
+ var doc=new jspdf.jsPDF({unit:'mm',format:'a4'}),W=210,blue=[23,78,166],navy=[16,43,85],yel=[255,176,46],ink=[23,35,55],grey=[102,112,133];
+ doc.setFillColor(navy[0],navy[1],navy[2]);doc.rect(0,0,W,28,'F');
+ doc.setFillColor(blue[0],blue[1],blue[2]);doc.rect(0,0,W,28,'F');
+ doc.setFillColor(yel[0],yel[1],yel[2]);doc.roundedRect(10,7,13,13,3,3,'F');
+ doc.setTextColor(ink[0],ink[1],ink[2]);doc.setFont('helvetica','bold');doc.setFontSize(13);doc.text((CO.name[0]||'T').toUpperCase(),16.5,16,{align:'center'});
+ doc.setTextColor(255,255,255);doc.setFontSize(17);doc.text(CO.name.toUpperCase(),27,13.5);
+ doc.setFont('helvetica','normal');doc.setFontSize(8.5);doc.setTextColor(214,226,248);doc.text(CO.tagline||'',27,19.5);
+ var ct=[CO.phone,CO.email].filter(Boolean);if(ct.length){doc.setTextColor(255,255,255);doc.text(ct,W-10,11,{align:'right'})}
+ doc.setFillColor(yel[0],yel[1],yel[2]);doc.rect(0,28,W,1.4,'F');
+ doc.setTextColor(ink[0],ink[1],ink[2]);doc.setFont('helvetica','bold');doc.setFontSize(10.5);doc.text('PRODUCT CATALOGUE & PRICE LIST',10,36.5);
+ doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(grey[0],grey[1],grey[2]);doc.text(new Date().toLocaleDateString('en-IN')+(tot>1?'   |   Part '+n+' of '+tot:''),W-10,36.5,{align:'right'});
+ var cw=92.5,ch=46.5,gx=5,gy=3.2,y0=40;
+ items.forEach(function(p,i){var x=10+(i%2)*(cw+gx),y=y0+Math.floor(i/2)*(ch+gy);
+  doc.setDrawColor(229,234,241);doc.setFillColor(255,255,255);doc.roundedRect(x,y,cw,ch,3,3,'FD');
+  doc.setFillColor(237,242,248);doc.roundedRect(x+3,y+3,39,ch-6,2.5,2.5,'F');
+  var drawn=false;
+  if(p.img){try{var ip=doc.getImageProperties(p.img),sc=Math.min(39/ip.width,(ch-6)/ip.height),iw=ip.width*sc,ih=ip.height*sc;doc.addImage(p.img,'JPEG',x+3+(39-iw)/2,y+3+((ch-6)-ih)/2,iw,ih);drawn=true}catch(e){}}
+  if(!drawn){doc.setTextColor(172,196,232);doc.setFont('helvetica','bold');doc.setFontSize(34);doc.text((p.name[0]||'?').toUpperCase(),x+22.5,y+ch/2+5,{align:'center'})}
+  var tx=x+46,tw=cw-49;
+  doc.setTextColor(ink[0],ink[1],ink[2]);doc.setFont('helvetica','bold');doc.setFontSize(11.5);
+  var nm=doc.splitTextToSize(p.name,tw).slice(0,3);doc.text(nm,tx,y+9);
+  if(p.pack){doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(grey[0],grey[1],grey[2]);doc.text('Pack: '+p.pack,tx,y+9+nm.length*4.8+0.5)}
+  if(p.mrp>p.price){var m='Rs. '+fmt(p.mrp);doc.setFont('helvetica','normal');doc.setFontSize(8.5);doc.setTextColor(grey[0],grey[1],grey[2]);doc.text(m,tx,y+ch-14.5);var mw=doc.getTextWidth(m);doc.setDrawColor(grey[0],grey[1],grey[2]);doc.line(tx,y+ch-15.6,tx+mw,y+ch-15.6);
+   var bt=off(p)+'% OFF';doc.setFont('helvetica','bold');doc.setFontSize(7);var bw=doc.getTextWidth(bt)+4;doc.setFillColor(yel[0],yel[1],yel[2]);doc.roundedRect(tx+mw+2.5,y+ch-18.6,bw,4.6,1.2,1.2,'F');doc.setTextColor(ink[0],ink[1],ink[2]);doc.text(bt,tx+mw+4.5,y+ch-15.3)}
+  doc.setTextColor(blue[0],blue[1],blue[2]);doc.setFont('helvetica','bold');doc.setFontSize(15);doc.text('Rs. '+fmt(p.price),tx,y+ch-5.5);
+ });
+ doc.setFillColor(yel[0],yel[1],yel[2]);doc.rect(10,283,W-20,0.8,'F');doc.setFont('helvetica','normal');doc.setFontSize(7.5);doc.setTextColor(grey[0],grey[1],grey[2]);
+ var ft=[CO.address,CO.note].filter(Boolean).join('   |   ');if(ft)doc.text(doc.splitTextToSize(ft,W-20),10,288);
+ doc.save(CO.name.replace(/\W+/g,'_')+'_Catalogue'+(tot>1?'_Part'+n:'')+'.pdf');toast('PDF downloaded')}
+document.addEventListener('click',function(e){var t=e.target,el;function g(a){return t.closest('['+a+']')}
+ if(t.id=='m'||g('data-x'))closeM();
+ else if(el=g('data-save'))saveP(el.dataset.save);
+ else if(g('data-cosave')){document.querySelectorAll('[data-co]').forEach(function(i){CO[i.dataset.co]=i.value.trim()});if(!CO.name)CO.name=DEF.name;save();closeM();render();toast('Saved')}
+ else if(el=g('data-pdf')){var b=parts();makePdf(b[+el.dataset.pdf],+el.dataset.pdf+1,b.length)}
+ else if(el=g('data-e'))form(el.dataset.e)
+ else if(el=g('data-d')){if(confirm('Delete this product?')){P=P.filter(function(p){return p.id!=el.dataset.d});sel.delete(+el.dataset.d);save();render()}}
+ else if(el=g('data-s')){var id=+el.dataset.s;sel.has(id)?sel.delete(id):sel.add(id);render()}});
+$('#bNew').onclick=function(){form()};$('#bSet').onclick=company;$('#bPdf').onclick=pdfSheet;
+$('#bAll').onclick=function(){P.forEach(function(p){sel.add(p.id)});render()};$('#bNone').onclick=function(){sel.clear();render()};
+$('#q').oninput=function(e){q=e.target.value.toLowerCase();render()};
+$('#bExp').onclick=function(){var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify({P:P,CO:CO})],{type:'application/json'}));a.download='trivenkem-backup.json';a.click()};
+$('#bImp').onchange=function(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(){try{var d=JSON.parse(r.result);P=d.P||P;CO=Object.assign(CO,d.CO||{});save();render();toast('Restored')}catch(x){toast('Invalid backup file')}};r.readAsText(f)};
+render();
+</script></body></html>
