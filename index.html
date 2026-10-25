@@ -1,193 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Catalog Maker</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&display=swap">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<style>
-:root{--bg:#f7f5f1;--card:#fff;--ink:#1a1a17;--mut:#6f6a60;--line:#e7e2d9;--acc:#1f4d3f;--onacc:#fff;--field:#f1eee8}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f0b1e;--card:#1a142f;--ink:#f3f0ff;--mut:#a49fc4;--line:#2c2447;--field:#140f26}}
-:root[data-theme="dark"]{--bg:#0f0b1e;--card:#1a142f;--ink:#f3f0ff;--mut:#a49fc4;--line:#2c2447;--field:#140f26}
-*{box-sizing:border-box}
-:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
-body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.5 "DM Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
-h1,h2,.logo{font-family:"DM Sans","DM Sans",system-ui,sans-serif}
-.w{max-width:520px;margin:0 auto;padding:14px 14px 130px}
-.logo{font-weight:800;font-size:19px}
-.nav{display:flex;align-items:center;padding:6px 4px 14px}
-.hs{background:#16302a;color:#fff;border-radius:28px;padding:30px 22px 24px;margin-bottom:16px;position:relative;overflow:hidden}
-.hs h1{font-size:36px;line-height:1.05;margin:0 0 10px;font-weight:800;letter-spacing:-.02em;position:relative}
-.hs p{margin:0 0 16px;opacity:.9;position:relative}
-.chips{display:flex;flex-wrap:wrap;gap:8px;position:relative}
-.chips span{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:5px 12px;font-size:13px;font-weight:500}
-.card{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:18px;margin-bottom:14px;box-shadow:0 8px 24px -14px rgba(20,20,10,.22)}
-.ch{display:flex;align-items:center;gap:10px;margin-bottom:6px}
-.ic{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;font-size:20px;background:var(--field)}
-h2{font-size:20px;margin:0;font-weight:800}
-label{display:block;font-size:14px;font-weight:700;color:var(--mut);margin:14px 0 6px}
-input{width:100%;font:inherit;color:var(--ink);background:var(--field);border:1.5px solid transparent;border-radius:14px;padding:13px 14px}
-input:focus{outline:none;border-color:var(--acc);background:var(--card)}
-button:focus-visible,a:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
-.row{display:flex;gap:8px}.row>*{min-width:0}
-.btn{font:inherit;font-weight:700;border:0;border-radius:16px;padding:15px 18px;background:var(--acc);color:var(--onacc);cursor:pointer;width:100%;transition:transform .12s}
-.btn:active{transform:scale(.97)}
-.g{background:#16302a;color:#fff}
-.wa{background:#25d366;color:#06361b}
-.alt{background:var(--field);color:var(--ink)}
-.sw{display:flex;gap:12px;flex-wrap:wrap}
-.sw button{width:40px;height:40px;border-radius:50%;border:3px solid var(--card);box-shadow:0 0 0 2px var(--line);cursor:pointer}
-.sw button.on{box-shadow:0 0 0 3px var(--ink)}
-.item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
-.item:last-child{border-bottom:0}
-.item .e{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;font-size:24px;background-color:var(--field);flex:none}
-.item .nm{flex:1;min-width:0;font-weight:500}
-.x{background:none;border:0;color:var(--mut);font-size:18px;cursor:pointer;padding:6px 8px}
-.empty{color:var(--mut);padding:8px 0}
-.note{font-size:13px;color:var(--mut);margin:10px 0 0}
-.phone{width:236px;margin:12px auto 0;border:7px solid var(--ink);border-radius:32px;overflow:hidden;background:var(--bg)}
-.mh{padding:20px 14px 16px;display:flex;flex-direction:column}.mh b{font-size:17px;font-family:"DM Sans",sans-serif}.mh small{opacity:.9}
-.mr{display:flex;align-items:center;gap:8px;padding:9px 14px;font-size:14px;border-bottom:1px solid var(--line)}.mr span:nth-child(2){flex:1}.mr b{font-weight:700}
-/* customer */
-.chero{color:var(--onacc);padding:calc(34px + env(safe-area-inset-top,0px)) 20px 70px;border-radius:0 0 34px 34px;background:linear-gradient(160deg,var(--acc),color-mix(in srgb,var(--acc) 55%,#000))}
-.av{width:64px;height:64px;border-radius:20px;background:rgba(255,255,255,.22);display:grid;place-items:center;font:800 30px "DM Sans",sans-serif;margin-bottom:14px}
-.chero h1{font-size:36px;line-height:1.05;margin:0 0 6px;font-weight:800;letter-spacing:-.02em}
-.chero p{margin:0;opacity:.92}
-.grid{max-width:520px;margin:-40px auto 0;padding:0 14px 150px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.pc{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:10px;box-shadow:0 10px 26px -16px rgba(20,15,42,.45);display:flex;flex-direction:column}
-.tl{aspect-ratio:1/.92;border-radius:16px;display:grid;place-items:center;font-size:58px}
-.pc .n{font-weight:700;margin:10px 4px 0;line-height:1.25}
-.pc .p{font:800 18px "DM Sans",sans-serif;margin:2px 4px 10px}
-.pc .a{margin-top:auto}
-.add{width:100%;border:0;border-radius:14px;padding:11px;font:inherit;font-weight:700;background:var(--acc);color:var(--onacc);cursor:pointer}
-.st{display:flex;align-items:center;justify-content:space-between;background:color-mix(in srgb,var(--acc) 14%,var(--card));border-radius:14px;padding:4px}
-.st button{width:38px;height:38px;border-radius:11px;border:0;background:var(--acc);color:var(--onacc);font-size:20px;font-weight:700;cursor:pointer}
-.st b{font-size:17px}
-.bar{position:fixed;left:0;right:0;bottom:0;padding:10px 14px calc(12px + env(safe-area-inset-bottom,0px))}
-.bar button{max-width:492px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;width:100%;border:0;border-radius:20px;padding:16px 20px;background:var(--acc);color:var(--onacc);font:700 16px "DM Sans",sans-serif;cursor:pointer;box-shadow:0 14px 30px -10px color-mix(in srgb,var(--acc) 70%,#000);animation:pop .22s ease-out}
-@keyframes pop{from{transform:translateY(10px);opacity:.6}to{transform:none;opacity:1}}
-.ft{text-align:center;font-size:13px;color:var(--mut);padding:0 0 120px}.ft a{color:var(--acc);font-weight:700}
-.top{display:flex;justify-content:space-between;align-items:center;padding:calc(10px + env(safe-area-inset-top,0px)) 14px 10px;background:var(--card);border-bottom:1px solid var(--line)}
-.pill{background:var(--field);border:0;border-radius:20px;padding:8px 14px;font:inherit;font-weight:700;color:var(--ink);cursor:pointer}
-.bar.s{background:linear-gradient(transparent,var(--bg) 40%)}.bar.s button{justify-content:center}
-.e,.ms{background-size:cover;background-position:center}.ms{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background-color:var(--field);flex:none}
-.row>.pb{flex:none;min-width:auto}.pb{font:inherit;font-weight:700;border:0;border-radius:14px;background:var(--field);color:var(--ink);padding:0 12px;white-space:nowrap;cursor:pointer}
-.mo{font:700 64px "DM Sans",sans-serif;color:var(--acc);opacity:.45}
-.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:100px;background:var(--ink);color:var(--bg);padding:11px 18px;border-radius:22px;font-size:14px;z-index:9}
-</style>
-</head>
-<body>
-<div id="app"></div>
-<script>
-var APP_URL = location.href.split("#")[0];
-var COLORS = ["#1f4d3f","#8b2635","#1e3a5f","#b4690e","#3f3f46","#5b3a8c"];
-var TINTS = ["#efece6","#e9ecef","#f0e9e1","#e8eee9","#ece9f0","#f1ebe4"];
-var S = {n:"",w:"91",t:"",c:COLORS[0],p:[]};
-try { var sv = localStorage.getItem("cm3"); if (sv) S = Object.assign(S, JSON.parse(sv)); } catch (e) {}
-function save(){ try { localStorage.setItem("cm3", JSON.stringify(S)); } catch (e) {} }
-function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
-function enc(o){ var b = new TextEncoder().encode(JSON.stringify(o)), s = ""; b.forEach(function(x){ s += String.fromCharCode(x); }); return btoa(s).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,""); }
-function dec(t){ try { t = t.replace(/-/g,"+").replace(/_/g,"/"); while (t.length % 4) t += "="; var s = atob(t); return JSON.parse(new TextDecoder().decode(Uint8Array.from(s, function(c){ return c.charCodeAt(0); }))); } catch (e) { return null; } }
-function onAcc(h){ var r = parseInt(h.substr(1,2),16), g = parseInt(h.substr(3,2),16), b = parseInt(h.substr(5,2),16); return (r*299+g*587+b*114)/1000 > 175 ? "#111" : "#fff"; }
-function setAcc(c){ var s = document.documentElement.style; s.setProperty("--acc", c); s.setProperty("--onacc", onAcc(c)); }
-function toast(m){ var t = document.createElement("div"); t.className = "toast"; t.textContent = m; document.body.appendChild(t); setTimeout(function(){ t.remove(); }, 1800); }
-var app = document.getElementById("app"), cart = {}, photo = "";
-function shareLink(){ return APP_URL + "#" + enc({n:S.n,w:S.w,t:S.t,c:S.c,p:S.p.map(function(q){ return q.slice(0,3); })}); }
-function ev(p,cls){ return '<span class="'+cls+'"'+(p[3]?' style="background-image:url('+p[3]+')"':'')+'>'+(p[3]?'':esc((p[1]||"?").charAt(0).toUpperCase()))+'</span>'; }
-function readPhoto(f,cb){ var r = new FileReader(); r.onload = function(){ var im = new Image(); im.onload = function(){ var m = 520, sc = Math.min(1, m/Math.max(im.width,im.height)), c = document.createElement("canvas"); c.width = Math.round(im.width*sc); c.height = Math.round(im.height*sc); c.getContext("2d").drawImage(im,0,0,c.width,c.height); cb(c.toDataURL("image/jpeg",.78)); }; im.src = r.result; }; r.readAsDataURL(f); }
-function loadImgs(){ return Promise.all(S.p.map(function(q){ return new Promise(function(res){ if (!q[3]) return res(null); var im = new Image(); im.onload = function(){ res(im); }; im.onerror = function(){ res(null); }; im.src = q[3]; }); })); }
-function mini(){
-  var rows = S.p.slice(0,3).map(function(p){ return '<div class="mr">'+ev(p,"ms")+'<span>'+esc(p[1])+'</span><b>₹'+esc(p[2])+'</b></div>'; }).join("");
-  return '<div class="mh" style="background:'+S.c+';color:'+onAcc(S.c)+'"><b>'+esc(S.n||"Your shop name")+'</b><small>'+esc(S.t||"Your tagline")+'</small></div>' + (rows || '<div class="mr"><span class="empty">Your products show up here</span></div>');
-}
-function seller(){
-  setAcc("#1f4d3f");
-  var sw = COLORS.map(function(c){ return '<button style="background:'+c+'" class="'+(S.c===c?"on":"")+'" data-c="'+c+'" aria-label="Colour"></button>'; }).join("");
-  var items = S.p.length ? S.p.map(function(p,i){ return '<div class="item">'+ev(p,"e")+'<span class="nm">'+esc(p[1])+'</span><b>₹'+esc(p[2])+'</b><button class="x" data-del="'+i+'" aria-label="Remove">✕</button></div>'; }).join("") : '<div class="empty">No items yet.</div>';
-  app.innerHTML = '<div class="w"><div class="nav"><span class="logo">Catalog Maker</span></div>'
-  + '<div class="hs"><h1>Make your catalogue</h1><p>Add your items. Download a PDF. Send it on WhatsApp.</p></div>'
-  + '<div class="card"><div class="ch"><h2>Shop</h2></div><label for="n">Shop name</label><input id="n" value="'+esc(S.n)+'" placeholder="Meena Home Bakery"><label for="t">Tagline</label><input id="t" value="'+esc(S.t)+'" placeholder="Fresh cakes, baked to order"><label for="w">WhatsApp number</label><input id="w" inputmode="tel" value="'+esc(S.w)+'" placeholder="919876543210"><label>Colour</label><div class="sw">'+sw+'</div></div>'
-  + '<div class="card"><div class="ch"><h2>Items</h2></div><div id="list">'+items+'</div><div class="row" style="margin-top:14px"><label class="pb" style="position:relative;display:flex;align-items:center;margin:0;font-size:16px;color:var(--ink)"><span id="pft">📷 Photo</span><input type="file" id="pf" accept="image/*" style="position:absolute;left:0;top:0;width:100%;height:100%;opacity:0;padding:0;cursor:pointer"></label><input id="pn" placeholder="Item name" aria-label="Item name"></div><div class="row" style="margin-top:8px"><input id="pp" inputmode="numeric" placeholder="Price ₹" aria-label="Price"><button class="btn g" id="add" style="width:auto">Add</button></div></div>'
-  + '<div class="card"><div class="ch"><h2>Preview</h2></div><div class="phone"><div id="mp">'+mini()+'</div></div><div class="row" style="margin-top:14px"><button class="btn alt" id="pv">Full preview</button><button class="btn alt" id="cp">Copy link</button></div></div></div>'
-  + '<div class="bar s"><button class="btn g" id="pdf">Download PDF</button></div>';
-  var $ = function(i){ return document.getElementById(i); };
-  ["n","t","w"].forEach(function(k){ $(k).oninput = function(){ S[k] = this.value; save(); $("mp").innerHTML = mini(); }; });
-  app.querySelectorAll("[data-c]").forEach(function(b){ b.onclick = function(){ S.c = b.dataset.c; save(); seller(); }; });
-  app.querySelectorAll("[data-del]").forEach(function(b){ b.onclick = function(){ S.p.splice(+b.dataset.del,1); save(); seller(); }; });
-  $("pf").onchange = function(){ var f = this.files[0]; if (!f) return; readPhoto(f, function(d){ photo = d; $("pft").textContent = "Photo added ✓"; }); };
-  $("add").onclick = function(){ var nm = $("pn").value.trim(), pr = $("pp").value.replace(/[^0-9.]/g,""); if (!nm || !pr){ toast("Enter item name and price"); return; } S.p.push(["", nm, pr, photo]); photo = ""; save(); seller(); };
-  $("pv").onclick = function(){ if (!S.p.length){ toast("Add one item first"); return; } cart = {}; menu(S, true); window.scrollTo(0,0); };
-  $("cp").onclick = function(){ if (!S.p.length||!S.n){ toast("Add a shop name and one item"); return; } var l = shareLink(); try { navigator.clipboard.writeText(l).then(function(){ toast("Link copied"); }, function(){ prompt("Copy this link", l); }); } catch (e) { prompt("Copy this link", l); } };
-  $("pdf").onclick = makePDF;
-}
-function makePDF(){
-  if (!S.n.trim() || !S.p.length){ toast("Add a shop name and one item"); return; }
-  var J = window.jspdf && window.jspdf.jsPDF;
-  if (!J){ toast("Check your internet and try again"); return; }
-  var num = String(S.w||"").replace(/\D/g,"");
-  if (num.length < 10){ toast("Enter a WhatsApp number"); return; }
-  var up = Promise.resolve(null);
-  var fr = document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve();
-  Promise.all([up, fr, loadImgs(), document.fonts.load("700 40px \"DM Sans\""), document.fonts.load("700 40px \"DM Sans\"")]).then(function(r){ var imgs = r[2];
-    var dl = r[0]; if (!dl){ dl = { save: function(o){ doc.save(o.filename); return Promise.resolve(); } }; }
-    var W = 1240, H = 1754, k = 210/W, F = '"DM Sans",system-ui,sans-serif', SF = F, acc = S.c, on = onAcc(acc), url = "https://wa.me/" + num + "?text=" + encodeURIComponent("Hi, I want to order from your catalogue");
-    var chunks = [S.p.slice(0,4)], rest = S.p.slice(4); while (rest.length) chunks.push(rest.splice(0,6));
-    var doc = new J({unit:"mm", format:"a4"}), idx = 0;
-    function rr(c,x,y,w,h,rad){ c.beginPath(); if (c.roundRect) c.roundRect(x,y,w,h,rad); else c.rect(x,y,w,h); }
-    function fit(c,t,w){ if (c.measureText(t).width <= w) return t; while (t.length > 1 && c.measureText(t + "…").width > w) t = t.slice(0,-1); return t + "…"; }
-    chunks.forEach(function(items, pi){
-      var cv = document.createElement("canvas"); cv.width = W; cv.height = H; var c = cv.getContext("2d");
-      c.fillStyle = "#fff"; c.fillRect(0,0,W,H);
-      var y0 = 90;
-      if (pi === 0){
-        c.fillStyle = acc; c.fillRect(0,0,W,430);
-        c.fillStyle = on; c.textAlign = "left"; c.font = "800 92px " + SF; c.fillText(fit(c,S.n.trim(),1120),60,230);
-        c.globalAlpha = .88; c.font = "500 42px " + SF; c.fillText(fit(c,S.t.trim(),1120),60,300); c.globalAlpha = 1;
-        c.fillRect(60,340,120,4); c.font = "500 34px " + F; c.fillText("Catalogue   |   WhatsApp +" + num,60,395);
-        y0 = 490;
-      }
-      items.forEach(function(p, i){
-        var x = 60 + (i % 2) * 580, y = y0 + Math.floor(i / 2) * 490, w = 540, ph = 340, im = imgs[idx + i];
-        c.fillStyle = TINTS[(idx + i) % 6]; c.fillRect(x,y,w,ph);
-        if (im){ c.save(); c.beginPath(); c.rect(x,y,w,ph); c.clip(); var sc = Math.max(w/im.width,ph/im.height), dw = im.width*sc, dh = im.height*sc; c.drawImage(im,x+(w-dw)/2,y+(ph-dh)/2,dw,dh); c.restore(); }
-        else { c.globalAlpha = .4; c.fillStyle = acc; c.textAlign = "center"; c.font = "700 160px " + SF; c.fillText((p[1]||"?").charAt(0).toUpperCase(),x+w/2,y+ph/2+55); c.globalAlpha = 1; }
-        c.textAlign = "left"; c.fillStyle = "#1a1a17"; c.font = "700 42px " + SF; c.fillText(fit(c,p[1],w),x,y+ph+52);
-        c.fillStyle = acc; c.font = "800 44px " + F; c.fillText("₹" + p[2],x,y+ph+106);
-        c.fillStyle = "#e7e2d9"; c.fillRect(x,y+ph+130,w,2);
-      });
-      idx += items.length;
-      c.fillStyle = acc; c.fillRect(60,H-150,W-120,90);
-      c.fillStyle = on; c.textAlign = "center"; c.font = "700 38px " + F; c.fillText("Tap to order on WhatsApp  +" + num,W/2,H-92);
-      if (pi) doc.addPage();
-      doc.addImage(cv.toDataURL("image/jpeg",.92),"JPEG",0,0,210,297);
-      doc.link(60*k,(H-150)*k,(W-120)*k,90*k,{url:url});
-    });
-    var name = (S.n.trim().replace(/[^\w ]/g,"").trim().replace(/ +/g,"-") || "shop") + "-catalogue.pdf";
-    return dl.save({filename:name, data:doc.output("arraybuffer")}).then(function(){ toast("PDF saved"); }, function(e){ if (!e || e.code !== "declined") toast("Could not save the PDF"); });
-  }).catch(function(){ toast("Could not make the PDF"); });
-}
-
-function menu(d, preview){
-  setAcc(d.c || COLORS[0]);
-  function total(){ var t = 0; d.p.forEach(function(p,i){ t += (cart[i]||0) * parseFloat(p[2]); }); return t; }
-  function count(){ var c = 0; for (var k in cart) c += cart[k]; return c; }
-  function draw(){
-    var cards = d.p.map(function(p,i){ var q = cart[i]||0; return '<div class="pc"><div class="tl" style="'+(p[3]?'background:url('+p[3]+') center/cover':'background:color-mix(in srgb,'+TINTS[i%6]+' 60%,var(--card))')+'">'+(p[3]?'':'<span class="mo">'+esc((p[1]||"?").charAt(0).toUpperCase())+'</span>')+'</div><div class="n">'+esc(p[1])+'</div><div class="p">₹'+esc(p[2])+'</div><div class="a">'+(q ? '<div class="st"><button data-m="'+i+'" aria-label="Less">−</button><b>'+q+'</b><button data-a="'+i+'" aria-label="More">+</button></div>' : '<button class="add" data-a="'+i+'">Add</button>')+'</div></div>'; }).join("");
-    var t = total(), c = count();
-    app.innerHTML = (preview ? '<div class="top"><button class="pill" id="bk">← Back to editing</button><span class="note" style="margin:0">Preview</span></div>' : '')
-    + '<div class="chero"><div class="av">'+esc((d.n||"S").charAt(0).toUpperCase())+'</div><h1>'+esc(d.n||"Our shop")+'</h1><p>'+esc(d.t||"Pick your items")+'</p></div><div class="grid">'+cards+'</div>'
-    + (c ? '<div class="bar"><button id="ord"><span>'+c+(c>1?" items":" item")+' · ₹'+t+'</span><span>Order on WhatsApp</span></button></div>' : "");
-    app.querySelectorAll("[data-a]").forEach(function(b){ b.onclick = function(){ cart[b.dataset.a] = (cart[b.dataset.a]||0)+1; draw(); }; });
-    app.querySelectorAll("[data-m]").forEach(function(b){ b.onclick = function(){ cart[b.dataset.m] = Math.max(0,(cart[b.dataset.m]||0)-1); draw(); }; });
-    var o = document.getElementById("ord"); if (o) o.onclick = function(){ var lines = []; d.p.forEach(function(p,i){ if (cart[i]) lines.push(cart[i] + " × " + p[1] + " (₹" + (cart[i]*parseFloat(p[2])) + ")"); }); var msg = "Hi " + (d.n||"") + ", I’d like to order:\n" + lines.join("\n") + "\nTotal: ₹" + total(); window.open("https://wa.me/" + String(d.w||"").replace(/\D/g,"") + "?text=" + encodeURIComponent(msg), "_blank"); };
-    var bk = document.getElementById("bk"); if (bk) bk.onclick = function(){ seller(); window.scrollTo(0,0); };
-  }
-  draw();
-}
-var h = location.hash.slice(1), data = h ? dec(h) : null;
-if (data && data.p) { menu(data, false); } else { seller(); }
-</script>
-</body>
-</html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Catalogue</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head><body>
+<header><div class="top"><div class="brand serif" id="brand"></div>
+<label class="search"><input id="q" type="search" placeholder="Search perfumes, notes, codes…" aria-label="Search"><span>🔍</span></label>
+<button class="enq" id="enq">My enquiry <b id="cnt">0</b></button></div></header>
+<nav class="cats"><div id="cats"></div></nav>
+<section class="hero"><div id="hero"></div></section>
+<main><div class="bar"><span id="count"></span><select id="sort" aria-label="Sort"><option value="default">Sort: Featured</option><option value="lo">Price: Low to High</option><option value="hi">Price: High to Low</option></select></div>
+<div class="grid" id="grid"></div></main>
+<footer id="foot"></footer>
+<a class="fab" id="fab" target="_blank" rel="noopener">WhatsApp us</a>
+<div class="modal" id="m"><div class="sheet" id="sheet"></div></div>
+<div id="toast" style="position:fixed;left:50%;bottom:80px;transform:translateX(-50%);background:#222;color:#fff;padding:9px 18px;border-radius:20px;font-size:13px;opacity:0;transition:opacity .2s;z-index:99;pointer-events:none"></div>
+<script src="data.js"></script><script src="app.js"></script>
+</body></html>
